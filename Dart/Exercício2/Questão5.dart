@@ -1,7 +1,13 @@
 import 'dart:io';
 
 void main() {
+  print("Digite um número de 0 a 7:");
   int dia = int.parse(stdin.readLineSync()!);
+
+  if (dia < 0 || dia > 7) {
+    print("Número Inválido. Tente novamente.");
+    main();
+  }
 
   switch (dia) {
     case 1:
