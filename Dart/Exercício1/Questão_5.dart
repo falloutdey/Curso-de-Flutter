@@ -18,6 +18,8 @@ void main() {
 
   print("Mapa Atual: $pesos\n");
 
+  final double? pesoNovo = pesos['Cauã'];
+
   pesos.remove('Carol');
   print("Mapa Atual: $pesos\n");
 
@@ -27,4 +29,6 @@ void main() {
   } else {
     print("Nome não encontrado.");
   }
+
+  print("Mapa final: $pesos");
 }
