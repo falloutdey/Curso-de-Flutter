@@ -30,5 +30,5 @@ void main() {
     print("Nome não encontrado.");
   }
 
-  print("Mapa final: $pesos");
+  print("\nMapa final: $pesos");
 }
