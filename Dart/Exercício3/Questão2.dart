@@ -2,9 +2,10 @@ import 'dart:math';
 import 'dart:io';
 
 void main() {
-  int numeroUsuario = pegarNumeroUsuario()!;
+  Random numeroAleatorio = Random();
+  int numeroEscolhido = numeroAleatorio.nextInt(10) + 1;
 
-  advinheNumero(numeroUsuario);
+  advinheNumero(numeroEscolhido);
 }
 
 int? pegarNumeroUsuario() {
@@ -19,16 +20,28 @@ int? pegarNumeroUsuario() {
   return numeroUsuario;
 }
 
-void advinheNumero(int numeroUsuario) {
-  Random numeroAleatorio = Random();
-  int numeroEscolhido = numeroAleatorio.nextInt(11 - 1) + 1;
+void advinheNumero(int numeroEscolhido) {
+  int tentativas = 5;
+  print("Você tem 5 tentativas para acertar o número!\n");
 
-  while (numeroUsuario != numeroEscolhido) {
-    if (numeroUsuario > numeroEscolhido) {
-      print("O número secreto é menor que $numeroUsuario");
+  while (tentativas >= 0) {
+    int numeroUsuario = pegarNumeroUsuario()!;
+
+    if (numeroUsuario == numeroEscolhido) {
+      print("\nParabéns!! Você acertou o número.");
+      break;
+    } else if (numeroUsuario > numeroEscolhido) {
+      print("\nO número secreto é menor que $numeroUsuario");
     } else if (numeroUsuario < numeroEscolhido) {
-      print("O número secreto é maior que $numeroUsuario");
+      print("\nO número secreto é maior que $numeroUsuario");
+    }
+
+    tentativas--;
+    print("Número de tentativas restantes: $tentativas\n");
+
+    if (tentativas == 0) {
+      print("Sinto muito! O número de tentativas acabou! :(");
+      break;
     }
   }
-  print("Parabéns!! Você acertou o número.");
 }
