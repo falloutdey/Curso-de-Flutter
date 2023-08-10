@@ -7,85 +7,65 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
+  final Map<String, List<String>> dados = {
+    'Sobremesas': [
+      'Torta de Maçã',
+      'Mousse de Chocolate',
+      'Pudim de Leite Condensado',
+    ],
+    'Pratos principais': [
+      'Frango Assado com Batatas',
+      'Espaguete à Bolonhesa',
+      'Risoto de Cogumelos',
+    ],
+    'Aperitivos': [
+      'Bolinhos de Queijo',
+      'Bruschetta de Tomate e Manjericão',
+      'Canapés de Salmão com Cream Cheese',
+    ]
+  };
+
+  final String? categoriaUsuario = null;
+  final String busca = "";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
-              title: Text("Minhas receitas"),
-              backgroundColor: Colors.lightBlue,
+              title: Text("Minhas Receitas"),
+              backgroundColor: Colors.blue,
             ),
             body: Column(
-              children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Sobremesas",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
-                      ),
-                    ),
-                    Row(children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Torta de Maçã"),
-                          Text("Mousse de Chocolate"),
-                          Text(
-                            "Pudim de Leite Condensado",
-                          )
-                        ],
-                      )
-                    ])
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Pratos Principais",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
-                      ),
-                    ),
-                    Row(children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Frango Assado com Batatas"),
-                          Text("Espaguete à Bolonhesa"),
-                          Text("Risoto de Cogumelos")
-                        ],
-                      )
-                    ])
-                  ],
-                ),
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        "Aperitivos",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
-                      ),
-                    ),
-                    Row(children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Bolinhos de Queijo"),
-                          Text("Bruschetta de Tomate e Manjericão"),
-                          Text("Canapés de Salmão com Cream Cheese")
-                        ],
-                      )
-                    ])
-                  ],
-                ),
-              ],
+              children: dados.entries.map((categoria) {
+                if (categoriaUsuario == null ||
+                    categoriaUsuario == categoria.key) {
+                  return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (busca.isEmpty)
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              categoria.key,
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                          )),
+                        for (String prato in categoria.value)
+                          if (prato.contains(busca) || busca.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child:
+                                  Text(prato, style: TextStyle(fontSize: 18)),
+                            )
+                      ]);
+                } else {
+                  return Container();
+                }
+              }).toList(),
             )));
   }
 }
