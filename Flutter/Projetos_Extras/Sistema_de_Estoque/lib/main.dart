@@ -9,6 +9,10 @@ void main() {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
+  Map getMapa() {
+    return _MyAppState().produtos;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: MyApp());
@@ -56,35 +60,41 @@ class _MyAppState extends State<MyApp> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: produtos.length,
-        itemBuilder: (BuildContext context, int index) {
-          String nomeProduto = produtos.keys.toList()[index];
-          Produto produto = produtos[nomeProduto]!;
+      body: produtos.isNotEmpty
+          ? ListView.builder(
+              itemCount: produtos.length,
+              itemBuilder: (BuildContext context, int index) {
+                String nomeProduto = produtos.keys.toList()[index];
+                Produto produto = produtos[nomeProduto]!;
 
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ListTile(
-                  leading: Icon(Icons.shopping_bag),
-                  title: Text(
-                    produto.nomeProduto + " (R\$ ${produto.preco})",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: produto.descricao != null
-                      ? Text(produto.descricao!,
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(fontWeight: FontWeight.w700))
-                      : Text(""),
-                  trailing: Text("x${produto.quantidade}"),
-                ),
-              ),
-              produtos.length > 1? Divider(height: 0, color: const Color.fromARGB(255, 196, 195, 195)) : Text(""),
-            ],
-          );
-        },
-      ),
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListTile(
+                        leading: Icon(Icons.shopping_bag),
+                        title: Text(
+                          produto.nomeProduto + " (R\$ ${produto.preco})",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: produto.descricao != null
+                            ? Text(produto.descricao!,
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(fontWeight: FontWeight.w700))
+                            : Text(""),
+                        trailing: Text("x${produto.quantidade}"),
+                      ),
+                    ),
+                    produtos.length > 1
+                        ? Divider(
+                            height: 0,
+                            color: const Color.fromARGB(255, 196, 195, 195))
+                        : Text(""),
+                  ],
+                );
+              },
+            )
+          : Center(child: Text("Não há produtos adicionados.")),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final novoProduto = await Navigator.push(
