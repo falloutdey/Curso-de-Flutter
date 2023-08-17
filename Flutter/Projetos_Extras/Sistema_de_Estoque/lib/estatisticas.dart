@@ -43,6 +43,18 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
     }
   }
 
+  List<Produto> getEstoqueBaixo() {
+    List<Produto> produtosEstoqueBaixo = [];
+
+  for (Produto produto in mapaProdutos.values) {
+    if (produto.quantidade <= 6) {
+      produtosEstoqueBaixo.add(produto);
+    }
+  }
+
+  return produtosEstoqueBaixo;
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,9 +94,21 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
                 ),
               ),
               ExpansionTile(
-                leading: Icon(Icons.info),
-                title: Text("Itens com Estoque Baixo"),
-                trailing: Icon(mudarIcon? Icons.arrow_drop_down : Icons.arrow_drop_up)
+                  leading: Icon(Icons.info),
+                  title: Text("Itens com Estoque Baixo", style: TextStyle(fontSize: 18),),
+                  trailing: Icon(
+                      mudarIcon ? Icons.arrow_drop_down : Icons.arrow_drop_up),
+                  onExpansionChanged: (bool expandido) {
+                    setState(() {
+                      mudarIcon = expandido;
+                    });
+                  },
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.shopping_bag),
+                      title: ,
+                    )
+                  ],
               )
             ],
           ),
