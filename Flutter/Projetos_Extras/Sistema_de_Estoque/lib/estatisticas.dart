@@ -22,6 +22,7 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
   int quantidadeTotal = 0;
   double precoTotal = 0;
   Map<dynamic, dynamic> mapaProdutos = MainApp().getMapa();
+  List<Produto> produtosEstoqueBaixo = [];
   bool mudarIcon = false;
 
   @override
@@ -43,16 +44,27 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
     }
   }
 
-  List<Produto> getEstoqueBaixo() {
-    List<Produto> produtosEstoqueBaixo = [];
+  void getEstoqueBaixo() {
 
   for (Produto produto in mapaProdutos.values) {
     if (produto.quantidade <= 6) {
       produtosEstoqueBaixo.add(produto);
     }
   }
+}
 
-  return produtosEstoqueBaixo;
+String getNomeEstoqueBaixo() {
+  for(Produto produto in produtosEstoqueBaixo) {
+    return produto.nomeProduto;
+  }
+  return '';
+}
+
+int getQuantidadeEstoqueBaixo() {
+  for (Produto produto in produtosEstoqueBaixo) {
+    return produto.quantidade;
+  }
+  return 0;
 }
 
   @override
@@ -106,12 +118,14 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
                   children: [
                     ListTile(
                       leading: Icon(Icons.shopping_bag),
-                      title: ,
+                      title: Text(getNomeEstoqueBaixo()),
+                      trailing: Text(getQuantidadeEstoqueBaixo().toString()),
                     )
                   ],
               )
             ],
           ),
-        ));
+        )
+    );
   }
 }
