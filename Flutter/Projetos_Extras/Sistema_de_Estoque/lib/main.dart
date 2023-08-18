@@ -28,10 +28,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var produtos = Map<String, Produto>();
+  var produtosEstoqueBaixo = Map<String, Produto>();
 
   void adicionarProduto(Produto produto) {
     setState(() {
       produtos[produto.nomeProduto] = produto;
+      if (produto.quantidade <= 6) {
+        produtosEstoqueBaixo[produto.nomeProduto] = produto;
+      }
     });
   }
 
@@ -51,8 +55,9 @@ class _MyAppState extends State<MyApp> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TelaEstatisticas(),
-                  ),
+                      builder: (context) => TelaEstatisticas(
+                          mapaProdutos: produtos,
+                          estoqueBaixo: produtosEstoqueBaixo)),
                 );
               },
               icon: Icon(Icons.analytics),
@@ -74,7 +79,7 @@ class _MyAppState extends State<MyApp> {
                       child: ListTile(
                         leading: Icon(Icons.shopping_bag),
                         title: Text(
-                          produto.nomeProduto + " (R\$ ${produto.preco})",
+                          produto.nomeProduto + " (R\$ ${produto.preco.toStringAsFixed(2)})",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: produto.descricao != null
@@ -230,6 +235,120 @@ class _TelaCadastroState extends State<TelaCadastro> {
             fixedSize: MaterialStatePropertyAll<Size>(Size.fromHeight(40)),
             backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TelaEstatisticas extends StatefulWidget {
+  final Map<String, Produto> mapaProdutos;
+  final Map<String, Produto> estoqueBaixo;
+  const TelaEstatisticas({required this.mapaProdutos, required this.estoqueBaixo});
+
+  @override
+  State<TelaEstatisticas> createState() => _TelaEstatisticasState();
+}
+
+class _TelaEstatisticasState extends State<TelaEstatisticas> {
+  int quantidadeTotal = 0;
+  double precoTotal = 0;
+  bool mudarIcon = false;
+  List<String> nomesEstoqueBaixo = [];
+  List<int> quantidadesEstoqueBaixo = [];
+
+  @override
+  void initState() {
+    super.initState();
+    calcularQuantidade();
+    calcularPreco();
+    getEstoqueBaixo();
+  }
+
+  void calcularQuantidade() {
+    for (Produto produto in widget.mapaProdutos.values) {
+      quantidadeTotal += produto.quantidade;
+    }
+  }
+
+  void calcularPreco() {
+    for (Produto produto in widget.mapaProdutos.values) {
+      precoTotal += produto.preco;
+    }
+  }
+
+  void getEstoqueBaixo() {
+    for (Produto produto in widget.mapaProdutos.values) {
+      if (produto.quantidade <= 6) {
+        nomesEstoqueBaixo.add(produto.nomeProduto);
+        quantidadesEstoqueBaixo.add(produto.quantidade);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Estatísticas"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
+        ),
+        body: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text(
+                "Quantidade Total",
+                style: TextStyle(fontSize: 18),
+              ),
+              trailing: Text(
+                quantidadeTotal.toString(),
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text(
+                "Preço Total",
+                style: TextStyle(fontSize: 18),
+              ),
+              trailing: Text(
+                precoTotal.toStringAsFixed(2),
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            ExpansionTile(
+              leading: Icon(Icons.info),
+              title: Text(
+                "Itens com Estoque Baixo",
+                style: TextStyle(fontSize: 18),
+              ),
+              trailing: Icon(
+                mudarIcon ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+              ),
+              onExpansionChanged: (bool expandido) {
+                setState(() {
+                  mudarIcon = expandido;
+                });
+              },
+              children: nomesEstoqueBaixo.map((nome) {
+                int index = nomesEstoqueBaixo.indexOf(nome);
+                return ListTile(
+                  leading: Icon(Icons.shopping_bag),
+                  title: Text(nome,
+                    style: TextStyle(fontSize: 18)),
+                  trailing: Text(quantidadesEstoqueBaixo[index].toString(),
+                    style: TextStyle(fontSize: 18)),
+                );
+              }).toList(),
+            ),
+          ],
         ),
       ),
     );
