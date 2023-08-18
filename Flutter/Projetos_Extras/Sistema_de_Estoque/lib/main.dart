@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'produto.dart';
-import 'estatisticas.dart';
 
 void main() {
   runApp(const MainApp());
